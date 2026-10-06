@@ -103,7 +103,7 @@ const App = () => {
       nav: ['Beranda', 'Keahlian', 'Proyek', 'Kontak'],
       role: "FULL-STACK WEB DEVELOPER",
       tagline: "> Mengubah proses bisnis kompleks menjadi aplikasi web yang efisien dan skalabel.",
-      about: "Lulusan D3 Teknik Informatika dengan spesialisasi pengembangan Full-Stack Web. Memiliki rekam jejak dalam membangun sistem Point of Sales (POS) dan mendigitalisasi alur kerja perbankan.",
+      about: "Lulusan D3 Teknik Informatika yang berfokus pada perancangan dan pembangunan aplikasi digital modern. Terbiasa menerjemahkan kebutuhan fungsional menjadi sistem yang tangguh, aman, berkinerja tinggi, dan berorientasi pada pengalaman pengguna.",
       skillsTitle: "C:\\SKILLS\\TECH_STACK.exe",
       projectsTitle: "C:\\PROJECTS\\DIR",
       projects: [
@@ -129,7 +129,7 @@ const App = () => {
       nav: ['Home', 'Skills', 'Projects', 'Contact'],
       role: "FULL-STACK WEB DEVELOPER",
       tagline: "> Transforming complex business processes into efficient and scalable web applications.",
-      about: "Diploma (D3) graduate in Informatics Engineering specializing in Full-Stack Web development. Proven track record in building POS systems and digitizing banking workflows.",
+      about: "An Informatics Engineering graduate focused on designing and building modern digital applications. Adept at translating functional requirements into robust, secure, high-performance systems with a strong user-centric approach.",
       skillsTitle: "C:\\SKILLS\\TECH_STACK.exe",
       projectsTitle: "C:\\PROJECTS\\DIR",
       projects: [
