@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Globe, ExternalLink, Code2, Database, Layout, ChevronLeft, ChevronRight } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Globe, ExternalLink, Code2, Database, Layout, ChevronLeft, ChevronRight, Terminal, Sun, Moon, Menu, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // IMPORT FOTO DARI FOLDER LOKAL
 import fotoProfil from './assets/siguttt.jpeg';
@@ -10,44 +10,57 @@ import fotoLandingPOS from './assets/landingpage.png';
 import fotoAdminPOS from './assets/admin.png';
 import fotoKasirPOS from './assets/kasir.png';
 
-// Komponen Slider Kustom
+// Komponen Slider Interaktif
 const ImageSlider = ({ images }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const prevSlide = () => {
-    const isFirstSlide = currentIndex === 0;
-    const newIndex = isFirstSlide ? images.length - 1 : currentIndex - 1;
-    setCurrentIndex(newIndex);
+    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
   };
 
   const nextSlide = () => {
-    const isLastSlide = currentIndex === images.length - 1;
-    const newIndex = isLastSlide ? 0 : currentIndex + 1;
-    setCurrentIndex(newIndex);
+    setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
   return (
-    <div className="relative h-56 w-full group/slider overflow-hidden bg-gray-200">
-      <div
-        style={{ backgroundImage: `url(${images[currentIndex]})` }}
-        className="w-full h-full bg-center bg-cover transition-all duration-500"
-      ></div>
+    <div className="relative h-64 w-full group/slider overflow-hidden border-b-4 border-black dark:border-green-500 bg-gray-200 dark:bg-zinc-900 cursor-grab active:cursor-grabbing">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentIndex}
+          initial={{ opacity: 0, scale: 1.1 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.9 }}
+          transition={{ duration: 0.4 }}
+          style={{ backgroundImage: `url(${images[currentIndex]})` }}
+          className="w-full h-full bg-center bg-cover absolute inset-0"
+        ></motion.div>
+      </AnimatePresence>
       
-      <button onClick={prevSlide} className="absolute top-1/2 -translate-y-1/2 left-2 text-2xl rounded-full p-1.5 bg-black/30 text-white cursor-pointer hover:bg-black/60 transition opacity-0 group-hover/slider:opacity-100">
-        <ChevronLeft size={20} />
-      </button>
+      <motion.button 
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={prevSlide} 
+        className="absolute top-1/2 -translate-y-1/2 left-2 text-xl p-2 bg-white text-black border-2 border-black dark:bg-black dark:text-green-500 dark:border-green-500 hover:bg-black hover:text-white dark:hover:bg-green-500 dark:hover:text-black transition-colors z-10"
+      >
+        <ChevronLeft size={24} />
+      </motion.button>
       
-      <button onClick={nextSlide} className="absolute top-1/2 -translate-y-1/2 right-2 text-2xl rounded-full p-1.5 bg-black/30 text-white cursor-pointer hover:bg-black/60 transition opacity-0 group-hover/slider:opacity-100">
-        <ChevronRight size={20} />
-      </button>
+      <motion.button 
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={nextSlide} 
+        className="absolute top-1/2 -translate-y-1/2 right-2 text-xl p-2 bg-white text-black border-2 border-black dark:bg-black dark:text-green-500 dark:border-green-500 hover:bg-black hover:text-white dark:hover:bg-green-500 dark:hover:text-black transition-colors z-10"
+      >
+        <ChevronRight size={24} />
+      </motion.button>
       
-      <div className="absolute bottom-3 right-0 left-0 flex justify-center gap-1.5">
+      <div className="absolute bottom-3 right-0 left-0 flex justify-center gap-2 z-10">
         {images.map((_, slideIndex) => (
           <div
             key={slideIndex}
             onClick={() => setCurrentIndex(slideIndex)}
-            className={`h-1.5 rounded-full cursor-pointer transition-all duration-300 ${
-              currentIndex === slideIndex ? 'w-4 bg-blue-500' : 'w-1.5 bg-white/70 hover:bg-white'
+            className={`h-3 cursor-pointer border-2 border-black dark:border-green-500 transition-all duration-300 ${
+              currentIndex === slideIndex ? 'w-8 bg-black dark:bg-green-500' : 'w-3 bg-white dark:bg-black'
             }`}
           ></div>
         ))}
@@ -58,233 +71,391 @@ const ImageSlider = ({ images }) => {
 
 const App = () => {
   const [lang, setLang] = useState('id');
+  const [theme, setTheme] = useState('dark');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State untuk Hamburger Menu
+
+  const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark');
+  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
   const data = {
     id: {
       nav: ['Beranda', 'Keahlian', 'Proyek', 'Kontak'],
-      role: "Full-Stack Web Developer",
-      tagline: "Mengubah proses bisnis kompleks menjadi aplikasi web yang efisien dan skalabel.",
-      about: "Lulusan D3 Teknik Informatika yang bersemangat dengan spesialisasi pengembangan Full-Stack Web. Memiliki rekam jejak dalam membangun sistem Point of Sales (POS) dan mendigitalisasi alur kerja perbankan.",
-      skillsTitle: "Tumpukan Teknologi",
-      projectsTitle: "Proyek Utama",
+      role: "FULL-STACK WEB DEVELOPER",
+      tagline: "> Mengubah proses bisnis kompleks menjadi aplikasi web yang efisien dan skalabel.",
+      about: "Lulusan D3 Teknik Informatika dengan spesialisasi pengembangan Full-Stack Web. Memiliki rekam jejak dalam membangun sistem Point of Sales (POS) dan mendigitalisasi alur kerja perbankan.",
+      skillsTitle: "C:\\SKILLS\\TECH_STACK.exe",
+      projectsTitle: "C:\\PROJECTS\\DIR",
       projects: [
         {
-          title: "Sistem Informasi Penjualan & POS (Toko Sembilan)",
-          desc: "Aplikasi Point of Sales (POS) berbasis SPA untuk manajemen ritel. Dilengkapi manajemen inventori, logika diskon dinamis, perlindungan data, dan otorisasi multi-role. Terintegrasi langsung dengan barcode scanner dan printer thermal.",
+          title: "[01] Sistem Informasi Penjualan & POS",
+          desc: "Aplikasi Point of Sales (POS) berbasis SPA untuk manajemen ritel. Dilengkapi manajemen inventori, logika diskon dinamis, dan otorisasi multi-role. Terintegrasi dengan barcode scanner & printer thermal.",
           tech: ["Laravel", "Tailwind CSS", "MySQL", "JsBarcode"],
           images: [fotoLandingPOS, fotoAdminPOS, fotoKasirPOS]
         },
         {
-          title: "Restructuring Financing System (BTN Syariah)",
-          desc: "Sistem digitalisasi alur kerja perbankan yang menggantikan proses manual berbasis spreadsheet. Meningkatkan akurasi dan efisiensi pelacakan data restrukturisasi pembiayaan nasabah secara signifikan.",
+          title: "[02] Restructuring Financing System",
+          desc: "Sistem digitalisasi alur kerja perbankan yang menggantikan proses manual berbasis spreadsheet. Meningkatkan akurasi pelacakan data restrukturisasi pembiayaan nasabah (BTN Syariah).",
           tech: ["PHP", "Web Development", "Database System"],
           images: [fotoDashboardBTN, fotoLandingBTN]
         }
       ],
-      contactTitle: "Mari Berkolaborasi",
-      contactDesc: "Tertarik untuk berkolaborasi atau memiliki peluang pengerjaan proyek? Jangan ragu untuk menghubungi saya melalui tautan di bawah.",
-      resumeBtn: "Unduh Resume (PDF)",
-      // Tautan ke PDF Indonesia
+      contactTitle: "C:\\CONTACT\\CONNECT.bat",
+      contactDesc: "> Tertarik berkolaborasi? Eksekusi tautan di bawah ini:",
+      resumeBtn: "UNDUH_RESUME.pdf",
       resumeLink: "/cv-sigit-id.pdf" 
     },
     en: {
       nav: ['Home', 'Skills', 'Projects', 'Contact'],
-      role: "Full-Stack Web Developer",
-      tagline: "Transforming complex business processes into efficient and scalable web applications.",
-      about: "A highly motivated Diploma (D3) graduate in Informatics Engineering specializing in Full-Stack Web development. Proven track record in building Point of Sales (POS) systems and digitizing banking workflows.",
-      skillsTitle: "Tech Stack",
-      projectsTitle: "Key Projects",
+      role: "FULL-STACK WEB DEVELOPER",
+      tagline: "> Transforming complex business processes into efficient and scalable web applications.",
+      about: "Diploma (D3) graduate in Informatics Engineering specializing in Full-Stack Web development. Proven track record in building POS systems and digitizing banking workflows.",
+      skillsTitle: "C:\\SKILLS\\TECH_STACK.exe",
+      projectsTitle: "C:\\PROJECTS\\DIR",
       projects: [
         {
-          title: "Web-Based POS & Sales System (Toko Sembilan)",
-          desc: "An SPA-based Point of Sales application tailored for retail management. Features inventory tracking, dynamic discounting logic, data protection, and multi-role authorization. Directly integrated with barcode scanners and thermal printers.",
+          title: "[01] Web-Based POS & Sales System",
+          desc: "An SPA-based POS application for retail management. Features inventory tracking, dynamic discounting, and multi-role authorization. Integrated with barcode scanners & thermal printers.",
           tech: ["Laravel", "Tailwind CSS", "MySQL", "JsBarcode"],
           images: [fotoLandingPOS, fotoAdminPOS, fotoKasirPOS]
         },
         {
-          title: "Restructuring Financing System (BTN Syariah)",
-          desc: "A digitized banking workflow system replacing manual spreadsheet-based processes. Significantly improved the accuracy and efficiency of tracking customer financing restructuring data.",
+          title: "[02] Restructuring Financing System",
+          desc: "A digitized banking workflow system replacing manual spreadsheet processes. Improved the accuracy of tracking customer financing restructuring data (BTN Syariah).",
           tech: ["PHP", "Web Development", "Database System"],
           images: [fotoDashboardBTN, fotoLandingBTN]
         }
       ],
-      contactTitle: "Let's Connect",
-      contactDesc: "Interested in collaborating or have a project opportunity? Feel free to reach out to me via the links below.",
-      resumeBtn: "Download Resume (PDF)",
-      // Tautan ke PDF Inggris
+      contactTitle: "C:\\CONTACT\\CONNECT.bat",
+      contactDesc: "> Interested in collaborating? Execute the links below:",
+      resumeBtn: "DOWNLOAD_RESUME.pdf",
       resumeLink: "/cv-sigit-en.pdf" 
     }
   };
 
   const t = data[lang];
 
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 40 },
+  // Variasi Animasi Halus
+  const fadeUp = {
+    hidden: { opacity: 0, y: 50 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
   };
 
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.2 } }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 font-sans text-gray-800 overflow-x-hidden">
-      {/* Navbar */}
-      <nav className="fixed w-full bg-white/90 backdrop-blur-sm shadow-sm z-50">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="font-bold text-xl text-blue-800">Sigit<span className="text-yellow-500">.</span></div>
-          <div className="flex items-center gap-6">
-            <div className="hidden md:flex gap-6 text-sm font-medium text-gray-600">
-              <a href="#home" className="hover:text-blue-600 transition">{t.nav[0]}</a>
-              <a href="#skills" className="hover:text-blue-600 transition">{t.nav[1]}</a>
-              <a href="#projects" className="hover:text-blue-600 transition">{t.nav[2]}</a>
-            </div>
-            <button 
-              onClick={() => setLang(lang === 'id' ? 'en' : 'id')}
-              className="flex items-center gap-2 bg-blue-50 text-blue-700 px-3 py-1.5 rounded-full text-xs font-bold hover:bg-blue-100 transition"
-            >
-              <Globe size={14} /> {lang === 'id' ? 'EN' : 'ID'}
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      {/* Hero Section */}
-      <section id="home" className="pt-32 pb-20 px-4">
-        <div className="max-w-6xl mx-auto flex flex-col-reverse md:flex-row items-center gap-12">
-          <motion.div 
-            className="flex-1 space-y-6"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
-            variants={fadeInUp}
-          >
-            <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 leading-tight">
-              Sigit Budi Prasetyo <br/>
-              <span className="text-blue-700">{t.role}</span>
-            </h1>
-            <p className="text-lg text-gray-600 max-w-xl">{t.tagline}</p>
-            <p className="text-gray-500 max-w-xl leading-relaxed">{t.about}</p>
-            <div className="flex gap-4 pt-4">
-              <a href="#contact" className="bg-blue-700 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-800 transition shadow-lg shadow-blue-200">
-                {t.contactTitle}
-              </a>
-              {/* TOMBOL UNDUH RESUME YANG SUDAH DIPERBARUI */}
-              <a 
-                href={t.resumeLink} 
-                download 
-                className="flex items-center gap-2 border border-gray-300 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-50 transition"
-              >
-                <ExternalLink size={18} /> {t.resumeBtn}
-              </a>
-            </div>
-          </motion.div>
-          <motion.div 
-            className="flex-1 flex justify-center"
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <div className="w-64 h-64 md:w-80 md:h-80 bg-blue-100 rounded-full border-4 border-white shadow-xl overflow-hidden flex items-center justify-center">
-              <img src={fotoProfil} alt="Sigit" className="w-full h-full object-cover" />
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Skills Section */}
-      <section id="skills" className="py-20 bg-white px-4">
-        <motion.div 
-          className="max-w-6xl mx-auto"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-          variants={fadeInUp}
+    <div className={`${theme === 'dark' ? 'dark' : ''}`}>
+      <div className="min-h-screen font-mono bg-white text-black dark:bg-[#050505] dark:text-green-500 transition-colors duration-500 selection:bg-black selection:text-white dark:selection:bg-green-500 dark:selection:text-black">
+        
+        {/* Navbar */}
+        <motion.nav 
+          initial={{ y: -100 }}
+          animate={{ y: 0 }}
+          transition={{ type: "spring", stiffness: 100, damping: 15 }}
+          className="fixed w-full bg-white/90 dark:bg-black/90 backdrop-blur-md border-b-4 border-black dark:border-green-500 z-50"
         >
-          <h2 className="text-3xl font-bold text-center mb-12 text-gray-900">{t.skillsTitle}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="p-6 border border-gray-100 rounded-2xl shadow-sm hover:-translate-y-2 transition duration-300">
-              <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mb-4"><Layout /></div>
-              <h3 className="text-xl font-bold mb-3">Frontend</h3>
-              <p className="text-gray-600">React.js, React Native, Tailwind CSS, HTML5, CSS3, JavaScript</p>
-            </div>
-            <div className="p-6 border border-gray-100 rounded-2xl shadow-sm hover:-translate-y-2 transition duration-300">
-              <div className="w-12 h-12 bg-yellow-100 text-yellow-600 rounded-xl flex items-center justify-center mb-4"><Code2 /></div>
-              <h3 className="text-xl font-bold mb-3">Backend</h3>
-              <p className="text-gray-600">PHP, Laravel, RESTful API, System Architecture</p>
-            </div>
-            <div className="p-6 border border-gray-100 rounded-2xl shadow-sm hover:-translate-y-2 transition duration-300">
-              <div className="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center mb-4"><Database /></div>
-              <h3 className="text-xl font-bold mb-3">Tools & Database</h3>
-              <p className="text-gray-600">MySQL, SAP PowerDesigner, Git, Postman, Hardware API</p>
+          <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+            
+            {/* Logo */}
+            <motion.a 
+              href="#home"
+              whileHover={{ scale: 1.05 }}
+              className="font-bold text-xl md:text-2xl tracking-tighter flex items-center gap-2 cursor-pointer"
+            >
+              <Terminal size={24} className="animate-pulse md:w-7 md:h-7" />
+              SIGIT_BP
+            </motion.a>
+            
+            <div className="flex items-center gap-2 md:gap-6">
+              {/* Menu Navigasi Desktop (Disembunyikan di HP) */}
+              <div className="hidden md:flex gap-6 font-bold uppercase text-sm">
+                {['home', 'skills', 'projects', 'contact'].map((item, i) => (
+                  <motion.a 
+                    key={i}
+                    whileHover={{ y: -3, color: theme === 'dark' ? '#fff' : '#4b5563' }}
+                    href={`#${item}`} 
+                    className="hover:underline decoration-2 underline-offset-4"
+                  >
+                    {t.nav[i]}
+                  </motion.a>
+                ))}
+              </div>
+              
+              {/* Tombol Toggles (Bahasa & Tema) */}
+              <div className="flex gap-1 md:gap-2">
+                <motion.button 
+                  whileHover={{ scale: 1.1, rotate: 10 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => setLang(lang === 'id' ? 'en' : 'id')}
+                  className="p-2 border-2 border-black dark:border-green-500 hover:bg-black hover:text-white dark:hover:bg-green-500 dark:hover:text-black font-bold text-xs"
+                >
+                  <Globe size={18} />
+                </motion.button>
+                <motion.button 
+                  whileHover={{ scale: 1.1, rotate: -10 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={toggleTheme}
+                  className="p-2 border-2 border-black dark:border-green-500 hover:bg-black hover:text-white dark:hover:bg-green-500 dark:hover:text-black"
+                >
+                  {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+                </motion.button>
+
+                {/* Tombol Hamburger (Hanya muncul di HP) */}
+                <motion.button 
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={toggleMobileMenu}
+                  className="md:hidden p-2 border-2 border-black dark:border-green-500 bg-black text-white dark:bg-green-500 dark:text-black"
+                >
+                  {isMobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
+                </motion.button>
+              </div>
             </div>
           </div>
-        </motion.div>
-      </section>
 
-      {/* Projects Section */}
-      <section id="projects" className="py-20 px-4 bg-gray-50">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12 text-gray-900">{t.projectsTitle}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {t.projects.map((project, idx) => (
-              <motion.div 
-                key={idx} 
-                className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 flex flex-col"
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.2 }}
-                variants={fadeInUp}
+          {/* Menu Dropdown Mobile */}
+          <AnimatePresence>
+            {isMobileMenuOpen && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="md:hidden border-t-4 border-black dark:border-green-500 bg-white dark:bg-black overflow-hidden"
               >
-                <ImageSlider images={project.images} />
-                
-                <div className="p-6 flex-1 flex flex-col">
-                  <h3 className="text-xl font-bold mb-2">{project.title}</h3>
-                  <p className="text-gray-600 text-sm mb-4 leading-relaxed flex-1">{project.desc}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {project.tech.map((tech, i) => (
-                      <span key={i} className="bg-gray-100 text-gray-700 px-3 py-1 rounded-md text-xs font-medium">
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
+                <div className="flex flex-col font-bold uppercase text-center divide-y-4 divide-black dark:divide-green-500">
+                  {['home', 'skills', 'projects', 'contact'].map((item, i) => (
+                    <a 
+                      key={i}
+                      href={`#${item}`} 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="py-4 hover:bg-black hover:text-white dark:hover:bg-green-500 dark:hover:text-black transition-colors"
+                    >
+                      {t.nav[i]}
+                    </a>
+                  ))}
                 </div>
               </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+            )}
+          </AnimatePresence>
+        </motion.nav>
 
-      {/* Contact Section */}
-      <section id="contact" className="py-20 bg-blue-900 text-white px-4">
-        <motion.div 
-          className="max-w-4xl mx-auto text-center"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.4 }}
-          variants={fadeInUp}
-        >
-          <h2 className="text-3xl font-bold mb-4">{t.contactTitle}</h2>
-          <p className="text-blue-200 mb-8 max-w-xl mx-auto">{t.contactDesc}</p>
-          <div className="flex justify-center gap-4 md:gap-6 flex-wrap">
-            <a href="https://github.com/Sigitbp" className="px-6 py-3 bg-white/10 rounded-full hover:bg-white/20 transition hover:-translate-y-1 font-semibold text-sm">
-              GitHub
-            </a>
-            <a href="https://linkedin.com/in/sigit-budi-prasetyo-54b567351" className="px-6 py-3 bg-white/10 rounded-full hover:bg-white/20 transition hover:-translate-y-1 font-semibold text-sm">
-              LinkedIn
-            </a>
-           <a 
-          href="https://mail.google.com/mail/?view=cm&fs=1&to=sigitbudip64@gmail.com" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="px-6 py-3 bg-white/10 rounded-full hover:bg-white/20 transition hover:-translate-y-1 font-semibold text-sm"
-        >
-          Email
-        </a>
+        {/* Hero Section */}
+        <section id="home" className="pt-32 pb-20 px-4 overflow-hidden">
+          <div className="max-w-6xl mx-auto flex flex-col-reverse md:flex-row items-center gap-12 mt-10">
+            <motion.div 
+              className="flex-1 space-y-6"
+              variants={staggerContainer}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+            >
+              <motion.div variants={fadeUp}>
+                <p className="text-gray-500 dark:text-green-800 font-bold mb-2">C:\Users\Sigit&gt; whoami</p>
+                <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter mb-2">
+                  Sigit Budi Prasetyo
+                </h1>
+                <motion.div 
+                  whileHover={{ scale: 1.02 }}
+                  className="text-xl md:text-2xl font-bold bg-black text-white dark:bg-green-500 dark:text-black inline-block px-3 py-1 shadow-[4px_4px_0px_0px_rgba(156,163,175,1)] dark:shadow-[4px_4px_0px_0px_rgba(21,128,61,1)]"
+                >
+                  {t.role}
+                </motion.div>
+              </motion.div>
+              
+              <motion.p variants={fadeUp} className="text-lg font-bold border-l-4 border-black dark:border-green-500 pl-4">{t.tagline}</motion.p>
+              <motion.p variants={fadeUp} className="max-w-xl text-gray-700 dark:text-green-400">{t.about}</motion.p>
+              
+              <motion.div variants={fadeUp} className="flex flex-wrap gap-4 pt-4">
+                <motion.a 
+                  whileHover={{ scale: 1.05, y: -5 }}
+                  whileTap={{ scale: 0.95 }}
+                  href="#contact" 
+                  className="border-2 border-black dark:border-green-500 bg-black text-white dark:bg-green-500 dark:text-black px-6 py-3 font-bold uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] dark:shadow-[4px_4px_0px_0px_rgba(34,197,94,0.4)]"
+                >
+                  [ {t.nav[3]} ]
+                </motion.a>
+                <motion.a 
+                  whileHover={{ scale: 1.05, y: -5 }}
+                  whileTap={{ scale: 0.95 }}
+                  href={t.resumeLink} 
+                  download 
+                  className="flex items-center gap-2 border-2 border-black dark:border-green-500 bg-white dark:bg-black px-6 py-3 font-bold uppercase hover:bg-gray-100 dark:hover:bg-zinc-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(34,197,94,1)]"
+                >
+                  <ExternalLink size={18} /> {t.resumeBtn}
+                </motion.a>
+              </motion.div>
+            </motion.div>
+            
+            <motion.div 
+              className="flex-1 flex justify-center relative"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, type: "spring" }}
+            >
+              {/* Animasi Melayang (Floating) tanpa Grayscale */}
+              <motion.div 
+                animate={{ y: [0, -15, 0] }}
+                transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+                className="w-64 h-64 md:w-80 md:h-80 border-4 border-black dark:border-green-500 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] dark:shadow-[12px_12px_0px_0px_rgba(34,197,94,1)] overflow-hidden bg-white z-10"
+              >
+                <motion.img 
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ duration: 0.4 }}
+                  src={fotoProfil} 
+                  alt="Sigit" 
+                  className="w-full h-full object-cover" 
+                />
+              </motion.div>
+              {/* Ornamen di belakang foto */}
+              <div className="absolute top-10 -right-4 w-64 h-64 border-4 border-dashed border-gray-300 dark:border-green-900 -z-10 hidden md:block"></div>
+            </motion.div>
           </div>
-        </motion.div>
-      </section>
+        </section>
 
-      <footer className="bg-blue-950 py-6 text-center text-sm text-blue-300">
-        &copy; {new Date().getFullYear()} Sigit Budi Prasetyo. Built with React, Tailwind CSS & Framer Motion.
-      </footer>
+        {/* Skills Section */}
+        <section id="skills" className="py-24 px-4 border-t-4 border-black dark:border-green-500 relative overflow-hidden">
+          <motion.div 
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            className="max-w-6xl mx-auto"
+          >
+            <motion.h2 variants={fadeUp} className="text-3xl font-black mb-12 uppercase flex items-center gap-3">
+              <Terminal className="text-gray-400 dark:text-green-800" /> {t.skillsTitle}
+            </motion.h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {/* Cards Interaktif */}
+              {[
+                { icon: Layout, title: "Frontend", desc: "React.js, React Native, Tailwind CSS, HTML5, CSS3, JavaScript" },
+                { icon: Code2, title: "Backend", desc: "PHP, Laravel, RESTful API, System Architecture" },
+                { icon: Database, title: "Database & Tools", desc: "MySQL, PowerDesigner, Git, Postman, Hardware API" }
+              ].map((skill, idx) => (
+                <motion.div 
+                  key={idx}
+                  variants={fadeUp}
+                  whileHover={{ scale: 1.05, y: -10, rotate: idx % 2 === 0 ? 1 : -1 }}
+                  className="p-8 border-4 border-black dark:border-green-500 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(34,197,94,1)] bg-white dark:bg-black group cursor-pointer"
+                >
+                  <div className="mb-6 border-b-4 border-black dark:border-green-500 pb-4 flex items-center gap-4 text-black dark:text-green-500 group-hover:text-blue-600 dark:group-hover:text-white transition-colors">
+                    <skill.icon size={36} />
+                    <h3 className="text-2xl font-bold uppercase">{skill.title}</h3>
+                  </div>
+                  <p className="font-bold leading-relaxed text-gray-700 dark:text-green-400">{skill.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </section>
+
+        {/* Projects Section */}
+        <section id="projects" className="py-24 px-4 border-t-4 border-black dark:border-green-500 bg-gray-50 dark:bg-[#0a0a0a]">
+          <div className="max-w-6xl mx-auto">
+            <motion.h2 
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="text-3xl font-black mb-12 uppercase flex items-center gap-3"
+            >
+              <Terminal className="text-gray-400 dark:text-green-800" /> {t.projectsTitle}
+            </motion.h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+              {t.projects.map((project, idx) => (
+                <motion.div 
+                  key={idx} 
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: idx * 0.2 }}
+                  whileHover={{ y: -10 }}
+                  className="border-4 border-black dark:border-green-500 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] dark:shadow-[12px_12px_0px_0px_rgba(34,197,94,1)] bg-white dark:bg-black flex flex-col overflow-hidden group"
+                >
+                  {/* Top Bar Window */}
+                  <div className="border-b-4 border-black dark:border-green-500 bg-black text-white dark:bg-green-500 dark:text-black px-4 py-3 flex justify-between items-center">
+                    <span className="font-bold text-sm tracking-widest">{project.title.split(' ')[0]} RUN</span>
+                    <div className="flex gap-2">
+                      <motion.div whileHover={{ scale: 1.5 }} className="w-4 h-4 rounded-full bg-white border-2 border-black dark:bg-black cursor-pointer"></motion.div>
+                      <motion.div whileHover={{ scale: 1.5 }} className="w-4 h-4 rounded-full bg-white border-2 border-black dark:bg-black cursor-pointer"></motion.div>
+                      <motion.div whileHover={{ scale: 1.5 }} className="w-4 h-4 rounded-full bg-white border-2 border-black dark:bg-black cursor-pointer"></motion.div>
+                    </div>
+                  </div>
+                  
+                  <ImageSlider images={project.images} />
+                  
+                  <div className="p-8 flex-1 flex flex-col">
+                    <h3 className="text-2xl font-black mb-4 uppercase group-hover:text-blue-600 dark:group-hover:text-white transition-colors">{project.title.replace(/\[\d+\] /, '')}</h3>
+                    <p className="font-semibold mb-6 flex-1 border-l-4 border-black dark:border-green-500 pl-4 text-gray-700 dark:text-green-400">
+                      {project.desc}
+                    </p>
+                    <div className="flex flex-wrap gap-2 pt-6 border-t-2 border-dashed border-black dark:border-green-500">
+                      {project.tech.map((tech, i) => (
+                        <motion.span 
+                          whileHover={{ scale: 1.1, backgroundColor: theme === 'dark' ? '#fff' : '#000', color: theme === 'dark' ? '#000' : '#fff' }}
+                          key={i} 
+                          className="bg-gray-100 text-black border-2 border-black dark:bg-green-900/30 dark:text-green-500 dark:border-green-500 px-3 py-1 text-xs font-bold uppercase cursor-default"
+                        >
+                          {tech}
+                        </motion.span>
+                      ))}
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Contact Section */}
+        <section id="contact" className="py-24 px-4 border-t-4 border-black dark:border-green-500 bg-white dark:bg-black">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="max-w-4xl mx-auto text-center"
+          >
+            <h2 className="text-3xl font-black mb-6 uppercase">{t.contactTitle}</h2>
+            <p className="font-bold mb-12 text-lg text-gray-600 dark:text-green-400">{t.contactDesc}</p>
+            <div className="flex justify-center gap-6 flex-wrap">
+              {[
+                { name: "GITHUB.exe", link: "https://github.com/Sigitbp", primary: false },
+                { name: "LINKEDIN.exe", link: "https://linkedin.com/in/sigit-budi-prasetyo-54b567351", primary: false },
+                { name: "EMAIL_ME.bat", link: "https://mail.google.com/mail/?view=cm&fs=1&to=sigitbudip64@gmail.com", primary: true }
+              ].map((btn, i) => (
+                <motion.a 
+                  key={i}
+                  whileHover={{ scale: 1.1, y: -5, rotate: i % 2 === 0 ? 2 : -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  href={btn.link} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className={`border-4 border-black dark:border-green-500 px-8 py-4 font-black uppercase shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(34,197,94,1)] ${
+                    btn.primary 
+                    ? 'bg-black text-white dark:bg-green-500 dark:text-black' 
+                    : 'bg-white text-black dark:bg-black dark:text-green-500'
+                  }`}
+                >
+                  {btn.name}
+                </motion.a>
+              ))}
+            </div>
+          </motion.div>
+        </section>
+
+        <footer className="border-t-4 border-black dark:border-green-500 py-6 text-center text-sm font-bold bg-gray-100 dark:bg-black">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+          >
+            C:\SYSTEM&gt; Copyright (c) {new Date().getFullYear()} Sigit Budi Prasetyo. All rights reserved. <span className="animate-pulse">_</span>
+          </motion.div>
+        </footer>
+      </div>
     </div>
   );
 };
